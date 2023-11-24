@@ -6,21 +6,33 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
-      - db
+      - db_service
     environment:
-      - DB_CONNECTION_STRING=Server=TestDb;Port=5432;Database=futureme;User ID=postgres;Password=12345;IntegratedSecurity=true;Pooling=true;
+      - ConnectionStrings__Db=Server=db_service;Port=5432;Database=TestDb;User ID=postgres;Password=12345;IntegratedSecurity=true;Pooling=true;
       - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - test_network
 
-  db:
-    image: postgres:latest
-    container_name: db
+  db_service:
+    image: postgres:15
+    restart: always
+    container_name: db_service
     environment:
       POSTGRES_DB: TestDb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - data:/var/lib/postgresql/data
+    networks:
+      - test_network
+
+networks:
+    test_network:
+        driver: bridge
+volumes:
+    data:

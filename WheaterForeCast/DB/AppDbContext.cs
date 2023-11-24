@@ -9,6 +9,5 @@ namespace WheaterForeCast.DB
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
-
     }
 }

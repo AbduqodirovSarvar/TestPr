@@ -1,16 +1,15 @@
-# test
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
-WORKDIR /App
-
-# Copy everything
-COPY . ./
-# Restore as distinct layers
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+EXPOSE 8443
+EXPOSE 8080
+# copy project csproj file and restore it in docker directory
+COPY ./*.csproj ./
 RUN dotnet restore
-# Build and publish a release
+# Copy everything into the docker directory and build
+COPY . .
 RUN dotnet publish -c Release -o out
-
-# Build runtime image
+# Build runtime final image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /App
-COPY --from=build-env /App/out .
+WORKDIR /app
+COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "WheaterForeCast.dll"]
