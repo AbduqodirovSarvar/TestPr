@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION_STRING=Server=TestDb;Port=5432;Database=futureme;User ID=postgres;Password=12345;IntegratedSecurity=true;Pooling=true;
+      - ASPNETCORE_URLS=http://+:80
+
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      POSTGRES_DB: TestDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
