@@ -4,6 +4,7 @@ EXPOSE 8443
 EXPOSE 8080
 # copy project csproj file and restore it in docker directory
 COPY ./*.csproj ./
+
 RUN dotnet restore
 # Copy everything into the docker directory and build
 COPY . .

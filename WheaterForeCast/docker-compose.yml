@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"
+      - "8443:443"
     depends_on:
       - db_service
     environment:
@@ -17,22 +18,22 @@ services:
       - test_network
 
   db_service:
-    image: postgres:15
-    restart: always
+    image: postgres:16
+    restart: unless-stopped
     container_name: db_service
     environment:
       POSTGRES_DB: TestDb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - data:/var/lib/postgresql/data
     networks:
       - test_network
 
 networks:
-    test_network:
-        driver: bridge
+  test_network:
+    driver: bridge
 volumes:
-    data:
+  data:
